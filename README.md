@@ -75,7 +75,26 @@ Values follow the four-tier store model. A committed file names a variable but n
 
 The workspace `stack.lock.json` records the commit this layer is pinned to.
 
-Run `just test` (or `mise run test`, or `npm test`) to check the contract. The validator also runs on its own with `node scripts/validate-layer.mjs`.
+Run `just test` to check the contract. The validator also runs on its own with `just validate`.
+
+## Commands
+
+| Command | Does |
+| --- | --- |
+| `just install` | Installs the pinned tools. |
+| `just deps` | Installs the dependencies with `bun install --frozen-lockfile`. |
+| `just fmt` / `just fmt-check` | Formats with Bun, or checks the formatting. |
+| `just lint` | Lints JavaScript and TypeScript with oxlint. |
+| `just typecheck` | Type checks the plugin and the scripts with `bun check`. |
+| `just test` | Runs the Bun test suite. |
+| `just coverage` | Runs the tests and writes `coverage/lcov.info`. |
+| `just validate` | Validates the layer contract on its own. |
+| `just check` | Runs everything CI requires locally. |
+| `just setup-discli` | Installs the `discli` Discord CLI once per machine. |
+
+## Documentation
+
+Read [`docs/README.md`](docs/README.md) for the repository's exceptions.
 
 ## License
 

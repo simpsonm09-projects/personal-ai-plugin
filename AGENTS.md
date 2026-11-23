@@ -12,12 +12,12 @@ The personal plugin layer for `simpsonm09`. It serves OpenCode and Claude Code f
 
 ## Commands
 
-- `just install`, `just lint`, `just test`, `just verify`.
+- `just install`, `just deps`, `just fmt-check`, `just lint`, `just typecheck`, `just test`, `just check`.
 - `just setup-discli` installs the `discli` Discord CLI once per machine.
 
 ## Repo facts
 
-- Language and toolchain: TypeScript, Node, and `@opencode/plugin`.
+- Language and toolchain: TypeScript and `@opencode/plugin`. Bun 1.4.5 formats, lints, type checks and runs the tests; the lockfile is `bun.lock`.
 - `maxstack` composes this layer last, so it overrides the org layer on a same-key conflict.
 - Skills: `integrations-personal`, `dev-tools`, `discord`, `agent-vault`.
 - The README covers the contents, the layering, and the layer contract.
