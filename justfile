@@ -11,35 +11,57 @@ default:
 install:
     mise install
 
-# Run every linter over the tracked files.
-lint:
-    mise exec -- flint run --full
+# Install the dependencies from the lockfile.
+deps:
+    mise exec -- bun install --frozen-lockfile
 
-# Fix what the linters can fix.
-lint-fix:
-    mise exec -- flint run --fix
+# Format JavaScript and TypeScript with Bun.
+fmt:
+    mise exec -- bun fmt index.ts tests scripts
+
+# Check JavaScript and TypeScript formatting with Bun.
+fmt-check:
+    mise exec -- bun fmt --check index.ts tests scripts
+
+# Type check the plugin and the repository scripts with Bun.
+typecheck:
+    mise exec -- bun check
+
+# Lint JavaScript and TypeScript, through Bun with an oxlint fallback.
+lint:
+    mise exec -- bun scripts/lint.ts
 
 # Run the AI-slop gate.
 aislop:
     npx --yes aislop@0.16.1 ci
 
-# Run the test suite. `mise run test` should hold the repository test command.
+# Run the test suite.
 test:
-    mise run test
+    mise exec -- bun test
 
 # Run the tests and write an lcov report to coverage/lcov.info.
 coverage:
-    npm ci
-    mise run coverage
+    mise exec -- bun install --frozen-lockfile
+    mise exec -- bun test --coverage --coverage-reporter=lcov --coverage-dir=coverage
+
+# Validate the layer contract on its own.
+validate:
+    mise exec -- bun scripts/validate-layer.mjs
+
+# Everything CI requires.
+check: fmt-check lint typecheck test
+
+# Historical alias for `check`, kept for the support template.
+verify: check
+
+# Install the guarded git hook.
+hooks:
+    git config --local core.hooksPath .githooks
 
 # Install the discli Discord CLI and run discli doctor.
 setup-discli:
     {{ if os_family() == "windows" { "pwsh -File scripts/setup-discli.ps1" } else { "bash scripts/setup-discli.sh" } }}
 
-# Lint and test.
-verify: lint test
-
-
 # Prune remote-tracking refs and delete local branches merged into main.
 prune:
-    node scripts/prune.mjs
+    mise exec -- bun scripts/prune.mjs

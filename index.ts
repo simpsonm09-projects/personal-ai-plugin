@@ -73,13 +73,15 @@ export default Plugin.define({
     await ctx.skill.transform((editor) => {
       for (const skill of skills) {
         if (editor.get(skill.id)) editor.remove(skill.id);
+        // The schema brands the id, the name and the path; the loader reads
+        // them from frontmatter and the directory, so the values are strings.
         editor.add({
           id: skill.id,
           name: skill.name,
           description: skill.description,
           path: skill.path,
           content: skill.content,
-        });
+        } as Parameters<typeof editor.add>[0]);
       }
     });
   },
