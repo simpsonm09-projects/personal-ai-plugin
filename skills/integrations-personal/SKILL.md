@@ -57,7 +57,7 @@ The `agent-vault` skill (`personal-ai-plugin:agent-vault` in Claude Code) owns t
 
 ## How `with-secrets` reaches the value
 
-The human runs `with-secrets [--offline] [--require <names>] <tool>` in WSL or `with-secrets.ps1` on Windows. Online is the default. The wrapper reads `settings/.env` for the Infisical machine identity, exports the project's `/secrets` and `/pii`, and fails without starting the tool if the store, either export, or a required name is unavailable. `--offline` uses only the `.env` fallback. Run `just secrets-init` once to create `settings/.env`. The old `.envrc` loader and `just import-secrets` are retired; a leftover `.envrc` import gets a warning. See `dev-setup/docs/secrets.md`.
+The human runs `with-secrets [--offline] [--require <names>] <tool>`. Online is the default. The wrapper reads `settings/.env` for the Infisical machine identity, exports the project's `/secrets` and `/pii`, and fails without starting the tool if the store, either export, or a required name is unavailable. `--offline` uses only the `.env` fallback. Create `settings/.env` once with the Infisical machine identity. The old `.envrc` loader and `just import-secrets` are retired; a leftover `.envrc` import gets a warning. See the `agent-vault` skill.
 
 ## Personal services
 
@@ -65,7 +65,7 @@ The human runs `with-secrets [--offline] [--require <names>] <tool>` in WSL or `
 
 Send from a personal mailbox over IMAP and SMTP. The mailbox address is `GMAIL_ADDRESS` from Infisical `/pii`. Authenticate with an App Password from `GMAIL_APP_PASSWORD` in Infisical `/secrets`, not OAuth2.
 
-- Config: `%APPDATA%\himalaya\config.toml` on Windows.
+- Config: `~/.config/himalaya/config.toml`.
 - The config points `backend.auth.cmd` and `message.send.backend.auth.cmd` at a command that prints the App Password from the environment.
 - Never drive `himalaya account configure`. It is interactive. Write the config and confirm with `with-secrets --require GMAIL_ADDRESS,GMAIL_APP_PASSWORD himalaya envelope list`.
 
@@ -120,6 +120,6 @@ Discord, including messages, channels, and DMs, is owned by `discli`. The bot to
 - Keep a credential in Infisical `/secrets` and PII, person, or machine config in Infisical `/pii`.
 - Keep `settings/.env` to the Infisical machine identity and a small offline fallback. Online `with-secrets` never merges it in; it is used only with `--offline`.
 - Reach a value through a wrapper. The agent reaches Discord and Postman through `with-vault --role agent`; the human can use `with-secrets` or `with-vault --role human` for them, and `with-secrets` for the other services. Name the wrapper rather than a raw environment variable on the agent path.
-- Confirm a CLI exists before you cite it or one of its commands. Run `command -v <cli>` in a Bash shell (WSL, or Git Bash on Windows) or `Get-Command <cli>` in PowerShell. Do not claim a job moved from MCP to a CLI the runtime does not have.
+- Confirm a CLI exists before you cite it or one of its commands. Run `command -v <cli>` in a Bash shell. Do not claim a job moved from MCP to a CLI the runtime does not have.
 - State how a service is reached only as it really is. Name the owner the runtime has, an MCP server or a CLI, and do not present one as the other.
 - The org registry states the general rule; this skill states the source.

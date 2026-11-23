@@ -1,7 +1,6 @@
-# Cross-platform task runner for humans and agents. `just --list` shows every
+# Task runner for humans and agents. `just --list` shows every
 # recipe. Keep each recipe a thin call to a portable tool or a script under
 # scripts/. See https://github.com/simpsonm09-projects/repo-standard/blob/main/docs/task-runner.md
-set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
 
 # List the recipes.
 default:
@@ -60,7 +59,7 @@ hooks:
 
 # Install the discli Discord CLI and run discli doctor.
 setup-discli:
-    {{ if os_family() == "windows" { "pwsh -File scripts/setup-discli.ps1" } else { "bash scripts/setup-discli.sh" } }}
+    mise exec -- bash scripts/setup-discli.sh
 
 # Check the .agents/skills tree; this repository has none (C7.10).
 agent-files:
