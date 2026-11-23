@@ -21,7 +21,7 @@ The personal plugin layer for `simpsonm09`. It serves OpenCode and Claude Code f
 - `maxstack` composes this layer last, so it overrides the org layer on a same-key conflict.
 - Skills: `integrations-personal`, `dev-tools`, `discord`, `agent-vault`.
 - The README covers the contents, the layering, and the layer contract.
-- Hooks: `just hooks` installs the shared Lefthook jobs from `simpsonm09-projects/.github` at the `hooks-v2` tag; `lefthook-local.yml` is git-ignored. Never skip a hook: no `LEFTHOOK=0`, no `--no-verify`, and never create `lefthook-local.yml` (C7.11). The ruleset is the real gate.
+- Hooks: `just hooks` installs the shared Lefthook jobs from `simpsonm09-projects/.github` at the `hooks-v3` tag; `lefthook-local.yml` is git-ignored. Never skip a hook: no `LEFTHOOK=0`, no `--no-verify`, and never create `lefthook-local.yml` (C7.11). The ruleset is the real gate.
 
 ## Skills
 
