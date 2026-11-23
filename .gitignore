@@ -16,3 +16,6 @@ coverage/
 .env
 .env.*
 !.env.example
+
+# Local Lefthook overrides (never committed)
+lefthook-local.yml
