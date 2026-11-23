@@ -164,3 +164,165 @@ test("detects a plugin id that does not match the package name", () => {
       ),
   );
 });
+
+test("accepts an escaped quote and a block comment in a JSONC fragment", () => {
+  withFixture(
+    (root) =>
+      writeFileSync(
+        join(root, "opencode.fragment.jsonc"),
+        '{\n  "note": "a \\"quoted\\" value", /* block */\n  "permissions": [],\n}\n',
+      ),
+    (failures) => assert.deepEqual(failures, []),
+  );
+});
+
+test("accepts a trailing comma followed by a line comment", () => {
+  withFixture(
+    (root) =>
+      writeFileSync(
+        join(root, "opencode.fragment.jsonc"),
+        '{\n  "permissions": [], // trailing\n}\n',
+      ),
+    (failures) => assert.deepEqual(failures, []),
+  );
+});
+
+test("accepts a trailing comma followed by a block comment", () => {
+  withFixture(
+    (root) =>
+      writeFileSync(
+        join(root, "opencode.fragment.jsonc"),
+        '{\n  "permissions": [], /* trailing */\n}\n',
+      ),
+    (failures) => assert.deepEqual(failures, []),
+  );
+});
+
+test("reports an unterminated block comment after a trailing comma", () => {
+  withFixture(
+    (root) =>
+      writeFileSync(
+        join(root, "opencode.fragment.jsonc"),
+        '{ "permissions": [], /* unterminated',
+      ),
+    (failures) =>
+      assert.ok(failures.some((f) => f.includes("invalid fragment"))),
+  );
+});
+
+test("reports a missing layer.json", () => {
+  withFixture(
+    (root) => rmSync(join(root, "layer.json")),
+    (failures) => assert.ok(failures.some((f) => f.includes("missing file"))),
+  );
+});
+
+test("reports invalid JSON in package.json", () => {
+  withFixture(
+    (root) => writeFileSync(join(root, "package.json"), "{"),
+    (failures) => assert.ok(failures.some((f) => f.includes("invalid JSON"))),
+  );
+});
+
+test("reports a layer kind other than config", () => {
+  withFixture(
+    (root) =>
+      writeFileSync(
+        join(root, "layer.json"),
+        JSON.stringify({ ...LAYER, kind: "plugin" }),
+      ),
+    (failures) =>
+      assert.ok(failures.some((f) => f.includes('expected "config"'))),
+  );
+});
+
+test("reports a layer without a config fragment name", () => {
+  withFixture(
+    (root) =>
+      writeFileSync(
+        join(root, "layer.json"),
+        JSON.stringify({ ...LAYER, config: "" }),
+      ),
+    (failures) =>
+      assert.ok(
+        failures.some((f) => f.includes("missing a config fragment name")),
+      ),
+  );
+});
+
+test("reports a config fragment layer.json names but does not exist", () => {
+  withFixture(
+    (root) =>
+      writeFileSync(
+        join(root, "layer.json"),
+        JSON.stringify({ ...LAYER, config: "missing.jsonc" }),
+      ),
+    (failures) =>
+      assert.ok(
+        failures.some((f) => f.includes("does not exist: missing.jsonc")),
+      ),
+  );
+});
+
+test("reports a layer that lists no files", () => {
+  withFixture(
+    (root) =>
+      writeFileSync(
+        join(root, "layer.json"),
+        JSON.stringify({ ...LAYER, files: [] }),
+      ),
+    (failures) => assert.ok(failures.some((f) => f.includes("lists no files"))),
+  );
+});
+
+test("reports a package.json without a name", () => {
+  withFixture(
+    (root) =>
+      writeFileSync(
+        join(root, "package.json"),
+        JSON.stringify({ files: PKG.files }),
+      ),
+    (failures) => assert.ok(failures.some((f) => f.includes("missing a name"))),
+  );
+});
+
+test("reports a skill directory without a SKILL.md", () => {
+  withFixture(
+    (root) => mkdirSync(join(root, "skills", "empty")),
+    (failures) =>
+      assert.ok(
+        failures.some((f) => f.includes("skill empty has no SKILL.md")),
+      ),
+  );
+});
+
+test("reports a skill without a frontmatter block", () => {
+  withFixture(
+    (root) =>
+      writeFileSync(join(root, "skills", "demo", "SKILL.md"), "# Demo\n"),
+    (failures) =>
+      assert.ok(failures.some((f) => f.includes("has no frontmatter block"))),
+  );
+});
+
+test("reports a skill without a description", () => {
+  withFixture(
+    (root) =>
+      writeFileSync(
+        join(root, "skills", "demo", "SKILL.md"),
+        "---\nname: demo\n---\n\n# Demo\n",
+      ),
+    (failures) =>
+      assert.ok(failures.some((f) => f.includes("has no description"))),
+  );
+});
+
+test("reports index.ts without a Plugin.define id", () => {
+  withFixture(
+    (root) => writeFileSync(join(root, "index.ts"), "export default {}\n"),
+    (failures) =>
+      assert.ok(
+        failures.some((f) => f.includes("does not declare a Plugin.define id")),
+      ),
+  );
+});
