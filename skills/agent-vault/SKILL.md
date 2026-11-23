@@ -44,7 +44,7 @@ Three identities keep access and attribution separate. The loader identity reads
 | `postman` | `postman` |
 | other | `--bundle <name>` required |
 
-The Windows wrappers are `with-secrets.ps1` and `with-vault.ps1` in `%USERPROFILE%\.config\agent-vault`. The WSL wrappers live in `~/.local/bin`, and the WSL role configs and the shim live under `~/.config/agent-vault`.
+The wrappers live in `~/.local/bin`, and the role configs and the shim live under `~/.config/agent-vault`.
 
 ```bash
 with-vault --role agent discli --json server list
@@ -57,7 +57,6 @@ with-secrets --require NTFY_TOPIC,NTFY_TOKEN sh -c 'ntfy publish "$NTFY_TOPIC" "
 - `infisical secrets delete` defaults to `--type personal`. To move a secret, pass `--type shared`, or the delete misses the shared copy.
 - The Postman CLI reaches `gateway.postman.com` for workspace and collection calls, not only `api.getpostman.com`. The `postman` bundle must list both hosts.
 - discord.py on aiohttp ignores `HTTPS_PROXY`, so a brokered Discord call needs the `sitecustomize.py` shim at `~/.config/agent-vault/shim/` to feed the proxy address to the client.
-- `127.0.0.1` is not forwarded from Windows to WSL. Windows wrappers use `localhost:17323` and WSL wrappers use `127.0.0.1`.
 - Agent Vault rejects an identity that already belongs to another project. Create a vault identity with no project membership.
 - Sessions are per-run and revoked on exit, so the session list fills with expired rows over time. Keep TTLs short and revoke on a schedule.
 - `infisical user get token` prints a multi-line block. Parse the `Token:` line, not the whole output.
